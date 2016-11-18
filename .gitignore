@@ -1,0 +1,12 @@
+/target/
+/logs/
+/.settings/
+/.mvn/
+/jate.log
+/.springBeans
+/.classpath
+/.project
+/testdata/solr-testbed/ACLRDTEC/data/
+/testdata/solr-testbed/GENIA/data/
+/testdata/solr-testbed/jateCore/data/
+/testdata_bk/
