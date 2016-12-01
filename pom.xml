@@ -116,6 +116,14 @@
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 		</dependency>
+
+		<!-- RAKE implementation -->
+		<dependency>
+			<groupId>edu.ehu.galan.rake</groupId>
+			<artifactId>RAKE</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -174,6 +182,11 @@
 		<repository>
 			<id>opennlp.sf.net</id>
 			<url>http://opennlp.sourceforge.net/maven2</url>
+		</repository>
+		<repository>
+			<id>CogcompSoftware</id>
+			<name>CogcompSoftware</name>
+			<url>http://cogcomp.cs.illinois.edu/m2repo/</url>
 		</repository>
 	</repositories>
 

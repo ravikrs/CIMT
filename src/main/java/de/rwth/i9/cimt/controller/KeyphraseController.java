@@ -92,4 +92,20 @@ public class KeyphraseController {
 		}
 		return trKPExtraction.extractKeywordTextRank(textbody.getText(), numKeyword);
 	}
+
+	@RequestMapping(value = "/trwordnet", method = RequestMethod.GET)
+	public ModelAndView getKPTRWordnet(Model model) {
+		logger.info("Inside the getKPTR");
+		model.addAttribute("textbody", new Textbody());
+		return new ModelAndView("kpextraction/tr/trwordnetview", "model", "objectName");
+	}
+
+	@RequestMapping(value = "/trwordnet", method = RequestMethod.POST)
+	public List<Keyword> postKPTRWordnet(@ModelAttribute Textbody textbody, HttpServletRequest req) {
+		int numKeyword = Integer.parseInt(textbody.getNumKeywords());
+		if (numKeyword <= 0) {
+			numKeyword = 15;
+		}
+		return trKPExtraction.extractKeywordTextRankWordnet(textbody.getText(), numKeyword);
+	}
 }

@@ -424,6 +424,8 @@ public class JateUtil {
 			Map<String, String> initParam = new HashMap<>();
 			initParam.put(AppParams.PREFILTER_MIN_TERM_TOTAL_FREQUENCY.getParamKey(), "1");
 			initParam.put(AppParams.CUTOFF_TOP_K_PERCENT.getParamKey(), "1");
+			initParam.put(AppParams.REFERENCE_FREQUENCY_FILE.getParamKey(),
+					"testdata/solr-testbed/ACLRDTEC/conf/bnc_unifrqs.normal");
 
 			AppWeirdness appWeirdness = new AppWeirdness(initParam);
 			terms = appWeirdness.extract(server.getCoreContainer().getCore(solrCoreName), jateProp);
@@ -485,6 +487,8 @@ public class JateUtil {
 			Map<String, String> initParam = new HashMap<>();
 			initParam.put(AppParams.PREFILTER_MIN_TERM_TOTAL_FREQUENCY.getParamKey(), "1");
 			initParam.put(AppParams.CUTOFF_TOP_K_PERCENT.getParamKey(), "1");
+			initParam.put(AppParams.REFERENCE_FREQUENCY_FILE.getParamKey(),
+					"testdata/solr-testbed/ACLRDTEC/conf/bnc_unifrqs.normal");
 
 			AppGlossEx appGlossEx = new AppGlossEx(initParam);
 			terms = appGlossEx.extract(server.getCoreContainer().getCore(solrCoreName), jateProp);
@@ -545,6 +549,8 @@ public class JateUtil {
 			Map<String, String> initParam = new HashMap<>();
 			initParam.put(AppParams.PREFILTER_MIN_TERM_TOTAL_FREQUENCY.getParamKey(), "1");
 			initParam.put(AppParams.CUTOFF_TOP_K_PERCENT.getParamKey(), "1");
+			initParam.put(AppParams.REFERENCE_FREQUENCY_FILE.getParamKey(),
+					"testdata/solr-testbed/ACLRDTEC/conf/bnc_unifrqs.normal");
 
 			AppTermEx appTermEx = new AppTermEx(initParam);
 			terms = appTermEx.extract(server.getCoreContainer().getCore(solrCoreName), jateProp);
