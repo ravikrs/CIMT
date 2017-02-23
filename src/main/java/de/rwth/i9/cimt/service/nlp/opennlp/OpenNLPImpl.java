@@ -7,9 +7,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -38,7 +40,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
-@Service
+@Service("openNLPImpl")
 public class OpenNLPImpl implements OpenNLP {
 	static private final Logger logger = LoggerFactory.getLogger(OpenNLPImpl.class);
 
@@ -336,20 +338,24 @@ public class OpenNLPImpl implements OpenNLP {
 	}
 
 	@Override
-	public List<String> nounPhraseExtractor(String[] tokenizeSentence, String[] posTaggerSentence) {
+	public Set<String> nounPhraseExtractor(String textContent) {
 		ChunkerME chunker = new ChunkerME(this.getChunkerModel());
+		Set<String> result = new HashSet<String>();
 
-		Span[] chunks = chunker.chunkAsSpans(tokenizeSentence, posTaggerSentence);
+		for (String sentence : this.detectSentences(textContent)) {
+			String[] tokens = this.tokenize(sentence);
+			Span[] chunks = chunker.chunkAsSpans(tokens, this.tagPartOfSpeech(tokens));
 
-		// chunkStrings are the actual chunks
-		String[] chunkStrings = Span.spansToStrings(chunks, tokenizeSentence);
-		List<String> result = new ArrayList<String>();
-		for (int i = 0; i < chunks.length; i++) {
-			if (chunks[i].getType().equals("NP")) {
-				result.add(chunkStrings[i]);
+			// chunkStrings are the actual chunks
+			String[] chunkStrings = Span.spansToStrings(chunks, tokens);
+			for (int i = 0; i < chunks.length; i++) {
+				if (chunks[i].getType().equals("NP")) {
+					result.add(chunkStrings[i]);
+				}
+
 			}
-
 		}
+
 		return result;
 	}
 

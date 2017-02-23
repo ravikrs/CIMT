@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import de.rwth.i9.cimt.algorithm.kpextraction.jate.Jate;
 import de.rwth.i9.cimt.model.Keyword;
-import de.rwth.i9.cimt.util.JateUtil;
 import uk.ac.shef.dcs.jate.JATEException;
 import uk.ac.shef.dcs.jate.model.JATETerm;
 
@@ -18,50 +18,50 @@ import uk.ac.shef.dcs.jate.model.JATETerm;
 public class JATEKPExtraction {
 	private static final Logger logger = LoggerFactory.getLogger(JATEKPExtraction.class);
 
-	public List<Keyword> extractKeywordJATE(String textbody, String algorithmName, int numKeywords) {
+	public List<Keyword> extractKeyword(String textbody, String algorithmName, int numKeywords) {
 		List<Keyword> keywords = new ArrayList<Keyword>();
 		int keywordCount = 0;
 		try {
 			List<JATETerm> terms = new ArrayList<JATETerm>();
 			switch (algorithmName) {
 			case "TTF":
-				terms = JateUtil.TTFAlgo(textbody);
+				terms = Jate.TTFAlgo(textbody);
 				break;
 
 			case "ATTF":
-				terms = JateUtil.ATTFAlgo(textbody);
+				terms = Jate.ATTFAlgo(textbody);
 				break;
 
 			case "TFIDF":
-				terms = JateUtil.TFIDFAlgo(textbody);
+				terms = Jate.TFIDFAlgo(textbody);
 				break;
 
 			case "RIDF":
-				terms = JateUtil.RIDFAlgo(textbody);
+				terms = Jate.RIDFAlgo(textbody);
 				break;
 
 			case "CValue":
-				terms = JateUtil.CValueAlgo(textbody);
+				terms = Jate.CValueAlgo(textbody);
 				break;
 
 			case "ChiSquare":
-				terms = JateUtil.ChiSquareAlgo(textbody);
+				terms = Jate.ChiSquareAlgo(textbody);
 				break;
 
 			case "RAKE":
-				terms = JateUtil.RAKEAlgo(textbody);
+				terms = Jate.RAKEAlgo(textbody);
 				break;
 
 			case "Weirdness":
-				terms = JateUtil.WeirdnessAlgo(textbody);
+				terms = Jate.WeirdnessAlgo(textbody);
 				break;
 
 			case "GlossEx":
-				terms = JateUtil.GlossExAlgo(textbody);
+				terms = Jate.GlossExAlgo(textbody);
 				break;
 
 			case "TermEx":
-				terms = JateUtil.TermExAlgo(textbody);
+				terms = Jate.TermExAlgo(textbody);
 				break;
 			default:
 				break;
