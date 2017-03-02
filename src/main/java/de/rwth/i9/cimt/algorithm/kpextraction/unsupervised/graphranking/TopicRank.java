@@ -1,33 +1,35 @@
 package de.rwth.i9.cimt.algorithm.kpextraction.unsupervised.graphranking;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import org.jgrapht.Graph;
 import org.jgrapht.alg.scoring.PageRank;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
+import com.apporiented.algorithm.clustering.Cluster;
+
+import de.rwth.i9.cimt.algorithm.clustering.hac.HACClusteringAlgorithm;
 import de.rwth.i9.cimt.model.Keyword;
 import de.rwth.i9.cimt.service.nlp.NLP;
-import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
+import opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM;
 
 public class TopicRank {
 	private static final Logger log = LoggerFactory.getLogger(TopicRank.class);
 	private static final int CO_OCCURRENCE_WINDOW = 5;
 	private static final String NOUN_PHRASE_REGEX_EXPR = "(NN|NNS|NNP|NNPS|JJ|JJR|JJS)*(NN|NNS|NNP|NNPS)";
 	private static final Pattern NOUN_PHRASE_PATTERN = Pattern.compile(NOUN_PHRASE_REGEX_EXPR);
+	private static final double STEM_OVERLAP_THRESHOLD = 0.25;
+	private static SnowballStemmer stemmer = new SnowballStemmer(ALGORITHM.ENGLISH);
 
 	/**
 	 * performs TopicRank Keyphrase Algorithm for the input textContent.
@@ -38,145 +40,178 @@ public class TopicRank {
 	 *            nlp implementation used for sentence detection
 	 */
 	public static List<Keyword> performTopicRankKE(String textContent, final NLP nlpImpl) {
-		Graph<String, DefaultWeightedEdge> textRankGraph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(
+		SimpleWeightedGraph<Cluster, DefaultWeightedEdge> topicRankGraph = new SimpleWeightedGraph<Cluster, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
-		List<String> tokenVertices = new ArrayList<String>();
+		List<Cluster> tokenVertices = new ArrayList<Cluster>();
+		Map<Cluster, String> clusterStringMap = new HashMap<Cluster, String>();
 		List<Keyword> returnedKeyphrases = new ArrayList<Keyword>();
-		List<String> sentencesList = Arrays.asList(nlpImpl.detectSentences(textContent));
 
-		Map<Integer, String> sentenceListMap = IntStream.range(0, sentencesList.size()).boxed()
-				.collect(Collectors.toMap(Function.identity(), i -> sentencesList.get(i)));
+		Map<String, List<Integer>> tokenOffsetPostionMap = getNounAdjSeqToken(textContent, nlpImpl);
+		List<String> nounAdjTokens = new ArrayList<String>(tokenOffsetPostionMap.keySet());
 
-		Map<Integer, List<String>> sentenceIndexTokenListMap = sentenceListMap.entrySet().stream()
-				.collect(
-						Collectors
-								.toMap(e -> e.getKey(),
-										e -> (List<String>) Arrays.asList(nlpImpl.tokenize(e.getValue())).stream()
-												.map(token -> token.trim().toLowerCase())
-												.collect(Collectors.toList())));
-
-		Set<String> nounAdjTokens = getNounAdjSeqToken(textContent, nlpImpl);
-
-		for (Map.Entry<Integer, String> entry : sentenceListMap.entrySet()) {
-			Integer index = entry.getKey();
-			String sentence = entry.getValue();
-			String[] tokens = sentenceIndexTokenListMap.get(index).toArray(new String[0]);
-			String[] posTags = nlpImpl.tagPartOfSpeech(tokens);
-			for (int i = 0; i < tokens.length; i++) {
-				if (isGoodPos(posTags[i])) {
-					String token = tokens[i].trim().toLowerCase();
-					if (!tokenVertices.contains(token)) {
-						tokenVertices.add(token);
-						textRankGraph.addVertex(token);
-					}
-				}
-			}
-
+		List<Cluster> clusters = performClustering(nounAdjTokens);
+		for (Cluster cluster : clusters) {
+			tokenVertices.add(cluster);
+			topicRankGraph.addVertex(cluster);
+			clusterStringMap.put(cluster, getClusterName(cluster));
 		}
 
-		for (Map.Entry<Integer, List<String>> entry : sentenceIndexTokenListMap.entrySet()) {
-			List<String> tokenList = entry.getValue();
-			int tokenIndex = 0;
-			for (String token : tokenList) {
-				tokenIndex++;
-				token = token.trim().toLowerCase();
-				if (tokenVertices.contains(token)) {
-					int toIndex = tokenIndex + CO_OCCURRENCE_WINDOW;
-					toIndex = toIndex > tokenList.size() ? tokenList.size() : toIndex;
-					tokenIndex = tokenIndex > toIndex ? toIndex : tokenIndex;
-					List<String> subtokenList = tokenList.subList(tokenIndex, toIndex);
-					for (String secondToken : subtokenList) {
-						secondToken = secondToken.trim().toLowerCase();
-						if (tokenVertices.contains(secondToken)) {
-							if (!token.equals(secondToken)) {
-								textRankGraph.addEdge(token, secondToken);
-							}
-						}
-					}
-				}
-
+		for (int i = 0; i < clusters.size(); i++) {
+			for (int j = i + 1; j < clusters.size(); j++) {
+				DefaultWeightedEdge we = topicRankGraph.addEdge(clusters.get(i), clusters.get(j));
+				double edgeWeight = calculateEdgeWeight(clusters.get(i), clusters.get(j), tokenOffsetPostionMap);
+				topicRankGraph.setEdgeWeight(we, edgeWeight);
 			}
 		}
 
-		PageRank<String, DefaultWeightedEdge> pr = new PageRank<String, DefaultWeightedEdge>(textRankGraph);
-		Map<String, Double> prScoreMap = pr.getScores();
-		List<String> returnedKeywords = prScoreMap.entrySet().stream().map(x -> x.getKey())
-				.collect(Collectors.toList());
-
-		List<String> nonRetainedkeywords = new ArrayList<String>();
-		for (String sentence : sentencesList) {
-			boolean isKeyphrase = false;
-			String keyphrase = "";
-			double keyphraseScore = 0.0;
-			int phraseCount = 0;
-			for (String token : nlpImpl.tokenize(sentence)) {
-				String trimmedtoken = token.trim().toLowerCase();
-				if (returnedKeywords.contains(trimmedtoken)) {
-					keyphrase += trimmedtoken + " ";
-					keyphraseScore += prScoreMap.get(trimmedtoken).doubleValue();
-					phraseCount++;
-					continue;
-				} else if (phraseCount > 1) {
-					returnedKeyphrases.add(new Keyword(keyphrase.trim(), keyphraseScore));
-					nonRetainedkeywords.addAll(Arrays.asList(keyphrase.trim().split("\\s+")));
+		PageRank<Cluster, DefaultWeightedEdge> pr = new PageRank<Cluster, DefaultWeightedEdge>(topicRankGraph);
+		Map<Cluster, Double> score = pr.getScores();
+		for (Entry<Cluster, Double> entry : score.entrySet()) {
+			System.out.println(clusterStringMap.get(entry.getKey()) + " " + entry.getValue());
+			String[] candidates = clusterStringMap.get(entry.getKey()).split(",");
+			String firstOccurredCandidate = "";
+			int minOffset = Integer.MAX_VALUE;
+			for (String candidate : candidates) {
+				List<Integer> offsetPos = tokenOffsetPostionMap.get(candidate);
+				Collections.sort(offsetPos);
+				if (minOffset > offsetPos.get(0)) {
+					firstOccurredCandidate = candidate;
+					minOffset = offsetPos.get(0);
 				}
-				keyphrase = "";
-				keyphraseScore = 0.0;
-				phraseCount = 0;
-				isKeyphrase = false;
 			}
-		}
-		returnedKeywords.removeAll(nonRetainedkeywords);
-		for (String keywordString : returnedKeywords) {
-			returnedKeyphrases.add(new Keyword(keywordString, prScoreMap.get(keywordString).doubleValue()));
+			returnedKeyphrases.add(new Keyword(firstOccurredCandidate, entry.getValue()));
 		}
 		Collections.sort(returnedKeyphrases, Keyword.KeywordComparatorDesc);
 		returnedKeyphrases.forEach(k -> System.out.println(k.getKeyword() + k.getScore()));
+
 		return returnedKeyphrases;
 
 	}
 
-	private static boolean isGoodPos(String pos) {
-		if (pos.startsWith("NN") || pos.startsWith("JJ"))
-			return true;
-		return false;
+	private static double calculateEdgeWeight(Cluster node1, Cluster node2,
+			Map<String, List<Integer>> tokenOffsetPostionMap) {
+		String[] candidates1 = getClusterName(node1).split(",");
+		String[] candidates2 = getClusterName(node2).split(",");
+		double edgeWeight = 0.0, dist = 0.0;
+		for (String candidate1 : candidates1) {
+			for (String candidate2 : candidates2) {
+				if (tokenOffsetPostionMap.containsKey(candidate1) && tokenOffsetPostionMap.containsKey(candidate2)) {
+					List<Integer> offsetPosition1 = tokenOffsetPostionMap.get(candidate1);
+					List<Integer> offsetPosition2 = tokenOffsetPostionMap.get(candidate2);
+					for (int offsetPositionValue1 : offsetPosition1) {
+						for (int offsetPositionValue2 : offsetPosition2) {
+							dist += 1.0 / (Math.abs(offsetPositionValue1 - offsetPositionValue2));
+						}
+					}
+					edgeWeight += dist;
+				}
+			}
+		}
+		return edgeWeight;
+
 	}
 
-	private static Set<String> getNounAdjSeqToken(String textContent, NLP nlp) {
-		Set<String> nounAdjTokens = new HashSet<String>();
+	private static Map<String, List<Integer>> getNounAdjSeqToken(String textContent, NLP nlp) {
+		Map<String, List<Integer>> tokenOffsetPostionMap = new HashMap<String, List<Integer>>();
 		String token = "";
+		int index = -1, phraseCount = 0, offsetPosition = -1;
 		for (String sentence : nlp.detectSentences(textContent)) {
 			String[] tokens = nlp.tokenize(sentence);
 			String[] posTags = nlp.tagPartOfSpeech(tokens);
-			int index = 0;
-			int phraseCount = 0;
+			index = -1;
+			phraseCount = 0;
 			for (String posTag : posTags) {
+				index++;
+				offsetPosition++;
 				if (posTag.startsWith("NN") || posTag.startsWith("JJ")) {
 					token += tokens[index] + " ";
 					phraseCount++;
 					continue;
 				} else if (phraseCount >= 1) {
-					nounAdjTokens.add(token);
+					token = token.toLowerCase().trim();
+					if (tokenOffsetPostionMap.containsKey(token)) {
+						tokenOffsetPostionMap.get(token).add(offsetPosition);
+					} else {
+						List<Integer> offsetPositionList = new ArrayList<Integer>();
+						offsetPositionList.add(offsetPosition);
+						tokenOffsetPostionMap.put(token, offsetPositionList);
+					}
 					phraseCount = 0;
+					token = "";
 				}
 			}
 
 		}
-		return nounAdjTokens;
+		return tokenOffsetPostionMap;
 	}
 
-	private boolean stemsOverlap(String token1, String token2) {
-		PorterStemmer stemmer = new PorterStemmer();
-		List<String> tokens1 = Arrays.asList(token1.split("\\s+")).stream().map(t -> stemmer.stem(t))
-				.collect(Collectors.toList());
-		List<String> tokens2 = Arrays.asList(token2.split("\\s+")).stream().map(t -> stemmer.stem(t))
-				.collect(Collectors.toList());
-		int totaltokens = tokens1.size() + tokens2.size();
-		double overlapScore = 0.0;
+	private static double stemOverlapScore(String token1, String token2) {
+		int overlapCount1 = 0;
+		int overlapCount2 = 0;
 
-		return true;
+		String[] subTokens1 = token1.split("\\s+");
+		String[] subTokens2 = token2.split("\\s+");
+		for (String subToken1 : subTokens1) {
+			for (String subToken2 : subTokens2) {
+				if (stemmer.stem(subToken1).equals(stemmer.stem(subToken2))) {
+					overlapCount1++;
+				}
+
+			}
+		}
+		for (String subToken2 : subTokens2) {
+			for (String subToken1 : subTokens1) {
+				if (stemmer.stem(subToken1).equals(stemmer.stem(subToken2))) {
+					overlapCount2++;
+				}
+
+			}
+		}
+		double overlapScore1 = (double) overlapCount1 / subTokens1.length;
+		double overlapScore2 = (double) overlapCount2 / subTokens2.length;
+		if (overlapCount1 > 0 && overlapScore1 >= STEM_OVERLAP_THRESHOLD && overlapScore2 >= STEM_OVERLAP_THRESHOLD) {
+			return 1 - ((overlapScore1 + overlapScore2) / 2);
+		} else {
+			return Double.MAX_VALUE;
+		}
 	}
 
-	private void performHAC() {
+	private static List<Cluster> performClustering(List<String> nounAdjTokens) {
+
+		HACClusteringAlgorithm alg = new HACClusteringAlgorithm();
+		int tokensLength = nounAdjTokens.size();
+		double distances[][] = new double[tokensLength][tokensLength];
+
+		for (int i = 0; i < tokensLength; i++) {
+			for (int j = i + 1; j < tokensLength; j++) {
+				double overlapScore = stemOverlapScore(nounAdjTokens.get(i), nounAdjTokens.get(j));
+				distances[i][j] = distances[j][i] = overlapScore;
+			}
+		}
+
+		String[] clusterNames = nounAdjTokens.toArray(new String[nounAdjTokens.size()]);
+
+		List<Cluster> clusters = alg.performFlatClustering(distances, clusterNames, new AverageLinkageStrategy(), 0.75);
+
+		for (Cluster c : clusters) {
+			System.out.println(c.toString());
+			System.out.println(c.getChildren());
+		}
+		return clusters;
 	}
+
+	private static String getClusterName(Cluster node) {
+		StringBuilder sb = new StringBuilder();
+		if (node.isLeaf()) {
+			return node.getName().trim();
+		}
+		for (Cluster child : node.getChildren()) {
+			sb.append(getClusterName(child)).append(",");
+		}
+		if (sb.toString().endsWith(","))
+			return sb.toString().substring(0, sb.length() - 1).trim();
+		else
+			return sb.toString().trim();
+	}
+
 }

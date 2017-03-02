@@ -1,4 +1,4 @@
-package de.rwth.i9.cimt.service.kpextraction;
+package de.rwth.i9.cimt.service.kpextraction.graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import com.sharethis.textrank.TextRankWordnet;
 import de.rwth.i9.cimt.model.Keyword;
 import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
-@Service("trKPExtraction")
+@Service("textRankKPExtraction")
 public class TextRankKPExtraction {
 	private static final Logger logger = LoggerFactory.getLogger(TextRankKPExtraction.class);
 	@Autowired

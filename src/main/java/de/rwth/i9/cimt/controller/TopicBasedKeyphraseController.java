@@ -22,7 +22,7 @@ import de.rwth.i9.cimt.service.kpextraction.topic.TopicalPageRankKPExtraction;
 @RestController
 @RequestMapping("/kpextraction/topic")
 public class TopicBasedKeyphraseController {
-	private static final Logger log = LoggerFactory.getLogger(KeyphraseController.class);
+	private static final Logger log = LoggerFactory.getLogger(SupervisedKeyphraseController.class);
 	@Autowired
 	KeyClusterKPExtraction keyClusterKPExtraction;
 	@Autowired
@@ -65,19 +65,4 @@ public class TopicBasedKeyphraseController {
 		return topicalPageRankKPExtraction.extractKeywordTPR(textbody.getText(), numKeyword);
 	}
 
-	@RequestMapping(value = "/tr", method = RequestMethod.GET)
-	public ModelAndView getKPTopicRank(Model model) {
-		log.info("Inside the getKPTopicRank");
-		model.addAttribute("textbody", new Textbody());
-		return new ModelAndView("kpextraction/topic/tr/trview", "modelName", "objectName");
-	}
-
-	@RequestMapping(value = "/tr", method = RequestMethod.POST)
-	public List<Keyword> postKPTopicRank(@ModelAttribute Textbody textbody, HttpServletRequest req) {
-		int numKeyword = Integer.parseInt(textbody.getNumKeywords());
-		if (numKeyword <= 0) {
-			numKeyword = 15;
-		}
-		return topicalPageRankKPExtraction.extractKeywordTR(textbody.getText(), numKeyword);
-	}
 }

@@ -18,21 +18,15 @@ import de.rwth.i9.cimt.model.Keyword;
 import de.rwth.i9.cimt.model.Textbody;
 import de.rwth.i9.cimt.service.kpextraction.JATEKPExtraction;
 import de.rwth.i9.cimt.service.kpextraction.RAKEKPExtraction;
-import de.rwth.i9.cimt.service.kpextraction.TextRankKPExtraction;
-import de.rwth.i9.cimt.service.kpextraction.topic.TopicalPageRankKPExtraction;
 
 @RestController
 @RequestMapping("/kpextraction")
-public class KeyphraseController {
-	private static final Logger log = LoggerFactory.getLogger(KeyphraseController.class);
+public class SupervisedKeyphraseController {
+	private static final Logger log = LoggerFactory.getLogger(SupervisedKeyphraseController.class);
 	@Autowired
 	JATEKPExtraction jateKPExtraction;
 	@Autowired
 	RAKEKPExtraction rakeKPExtraction;
-	@Autowired
-	TopicalPageRankKPExtraction topicalPageRankKPExtraction;
-	@Autowired
-	TextRankKPExtraction textRankKPExtraction;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getKP() {
@@ -69,37 +63,5 @@ public class KeyphraseController {
 			numKeyword = 15;
 		}
 		return jateKPExtraction.extractKeyword(textbody.getText(), textbody.getAlgorithmName(), numKeyword);
-	}
-
-	@RequestMapping(value = "/tr", method = RequestMethod.GET)
-	public ModelAndView getKPTR(Model model) {
-		log.info("Inside the getKPTR");
-		model.addAttribute("textbody", new Textbody());
-		return new ModelAndView("kpextraction/tr/trview", "model", "objectName");
-	}
-
-	@RequestMapping(value = "/tr", method = RequestMethod.POST)
-	public List<Keyword> postKPTR(@ModelAttribute Textbody textbody, HttpServletRequest req) {
-		int numKeyword = Integer.parseInt(textbody.getNumKeywords());
-		if (numKeyword <= 0) {
-			numKeyword = 15;
-		}
-		return textRankKPExtraction.extractKeywordTextRank(textbody.getText(), numKeyword);
-	}
-
-	@RequestMapping(value = "/trwordnet", method = RequestMethod.GET)
-	public ModelAndView getKPTRWordnet(Model model) {
-		log.info("Inside the getKPTR");
-		model.addAttribute("textbody", new Textbody());
-		return new ModelAndView("kpextraction/tr/trwordnetview", "model", "objectName");
-	}
-
-	@RequestMapping(value = "/trwordnet", method = RequestMethod.POST)
-	public List<Keyword> postKPTRWordnet(@ModelAttribute Textbody textbody, HttpServletRequest req) {
-		int numKeyword = Integer.parseInt(textbody.getNumKeywords());
-		if (numKeyword <= 0) {
-			numKeyword = 15;
-		}
-		return textRankKPExtraction.extractKeywordTextRankWordnet(textbody.getText(), numKeyword);
 	}
 }

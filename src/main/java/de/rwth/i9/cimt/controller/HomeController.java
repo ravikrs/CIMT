@@ -2,7 +2,6 @@ package de.rwth.i9.cimt.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -10,24 +9,18 @@ import java.util.Set;
 import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.wikibrain.conf.Configurator;
-import org.wikibrain.core.cmd.Env;
-import org.wikibrain.core.cmd.EnvBuilder;
-import org.wikibrain.core.dao.LocalPageDao;
-import org.wikibrain.core.lang.Language;
-import org.wikibrain.core.lang.LanguageSet;
-import org.wikibrain.core.lang.LocalId;
-import org.wikibrain.core.model.Title;
-import org.wikibrain.phrases.PhraseAnalyzer;
 
-import de.rwth.i9.cimt.service.DummyService;
+import de.tudarmstadt.ukp.wikipedia.api.DatabaseConfiguration;
+import de.tudarmstadt.ukp.wikipedia.api.Page;
+import de.tudarmstadt.ukp.wikipedia.api.WikiConstants.Language;
+import de.tudarmstadt.ukp.wikipedia.api.Wikipedia;
+import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
 import slib.graph.algo.utils.GAction;
 import slib.graph.algo.utils.GActionType;
 import slib.graph.algo.utils.GraphActionExecutor;
@@ -51,8 +44,6 @@ import slib.sml.sm.core.utils.SMconf;
 public class HomeController {
 
 	private static final Logger log = LoggerFactory.getLogger(HomeController.class);
-	@Autowired
-	DummyService dummyService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getHome(Locale locale, Model model) {
@@ -74,24 +65,7 @@ public class HomeController {
 	public String view() {
 		log.info("Inside the message/view");
 		try {
-			String[] args = new String[] { "-l", "all,simple,en" };
-			// Env env = EnvBuilder.envFromArgs(args);
-			Env env = new EnvBuilder().setLanguages(LanguageSet.ALL)
-					.setConfigFile("C:\\rks\\Thesis\\Softwares\\Wikibrain\\customized.conf").build();
-			Configurator configurator = env.getConfigurator();
-			PhraseAnalyzer pa = (PhraseAnalyzer) configurator.get(PhraseAnalyzer.class, "anchortext");
-			LocalPageDao pageDao = (LocalPageDao) configurator.get(LocalPageDao.class);
 
-			LinkedHashMap<LocalId, Float> resolution = pa.resolve(Language.SIMPLE, "Apple", 20);
-
-			System.out.println("resolution of apple");
-			if (resolution == null)
-				System.out.println("\tno resolution !");
-			else
-				for (LocalId p : resolution.keySet()) {
-					Title title = pageDao.getById(p).getTitle();
-					System.out.println("\t" + title + ": " + resolution.get(p));
-				}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,6 +176,35 @@ public class HomeController {
 	@RequestMapping(value = "/test2", method = RequestMethod.GET)
 	public ModelAndView view2() {
 		log.info("Inside the message/view1");
+		return new ModelAndView("messages/view", "message", "");
+	}
+
+	@RequestMapping(value = "/test3", method = RequestMethod.GET)
+	public ModelAndView view3() {
+		log.info("Inside the message/view3");
+
+		// configure the database connection parameters
+		DatabaseConfiguration dbConfig = new DatabaseConfiguration();
+		dbConfig.setHost("localhost");
+		dbConfig.setDatabase("simplewikidb");
+		dbConfig.setUser("wikiuser");
+		dbConfig.setPassword("wikiuser");
+		dbConfig.setLanguage(Language.simple_english);
+
+		// Create a new German wikipedia.
+		Wikipedia wiki;
+		try {
+			wiki = new Wikipedia(dbConfig);
+			// Get the page with title "Hello world".
+			// May throw an exception, if the page does not exist.
+			Page page = wiki.getPage("April");
+
+			System.out.println(page.getText());
+		} catch (WikiApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return new ModelAndView("messages/view", "message", "");
 	}
 

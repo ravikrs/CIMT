@@ -36,6 +36,12 @@
 		<junit.version>4.12</junit.version>
 		<nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
 		<jdk.version>1.8</jdk.version>
+		<dkpro.jwpl.version>1.1.0</dkpro.jwpl.version>
+		<hibernate.version>4.3.10.Final</hibernate.version>
+		<dkpro.wsd.version>1.2.0</dkpro.wsd.version>
+		<dkpro.similarity.version>2.1.0</dkpro.similarity.version>
+		<dkpro.keyphrases.version>1.5.0</dkpro.keyphrases.version>
+		<dkpro.jwktl.version>1.1.0</dkpro.jwktl.version>
 	</properties>
 
 	<dependencies>
@@ -131,17 +137,6 @@
 			<version>0.7.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.wikibrainapi</groupId>
-			<artifactId>wikibrain</artifactId>
-			<version>0.8.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>com.github.sharispe</groupId>
 			<artifactId>slib-sml</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -161,6 +156,69 @@
 			<groupId>net.sf.jung</groupId>
 			<artifactId>jung-algorithms</artifactId>
 			<version>2.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
+			<artifactId>de.tudarmstadt.ukp.wikipedia.api</artifactId>
+			<version>${dkpro.jwpl.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
+			<artifactId>de.tudarmstadt.ukp.wikipedia.datamachine</artifactId>
+			<version>${dkpro.jwpl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
+			<artifactId>de.tudarmstadt.ukp.wikipedia.util</artifactId>
+			<version>${dkpro.jwpl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
+			<artifactId>de.tudarmstadt.ukp.wikipedia.parser</artifactId>
+			<version>${dkpro.jwpl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
+			<version>${dkpro.similarity.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.wsd</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.wsd.core</artifactId>
+			<version>${dkpro.wsd.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.keyphrases</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.keyphrases.core-asl</artifactId>
+			<version>${dkpro.keyphrases.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.jwktl</groupId>
+			<artifactId>dkpro-jwktl</artifactId>
+			<version>${dkpro.jwktl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.apporiented/hierarchical-clustering -->
+		<dependency>
+			<groupId>com.apporiented</groupId>
+			<artifactId>hierarchical-clustering</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 
 
@@ -232,6 +290,14 @@
 			<id>galan-maven-repo</id>
 			<name>galan-maven-repo-releases</name>
 			<url>http://galan.ehu.es/artifactory/ext-release-local</url>
+		</repository>
+		<repository>
+			<id>ukp-oss-releases</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+		</repository>
+		<repository>
+			<id>ukp-oss-snapshots</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
 		</repository>
 	</repositories>
 
