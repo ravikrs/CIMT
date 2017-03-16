@@ -70,6 +70,7 @@ public class HITS {
 			}
 			break;
 		}
+		scanner.close();
 
 	}
 

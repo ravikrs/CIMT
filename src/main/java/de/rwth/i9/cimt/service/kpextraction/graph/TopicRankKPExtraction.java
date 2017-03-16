@@ -14,7 +14,7 @@ import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
 @Service("topicRankKPExtraction")
 public class TopicRankKPExtraction {
-	private static final Logger logger = LoggerFactory.getLogger(TopicRankKPExtraction.class);
+	private static final Logger log = LoggerFactory.getLogger(TopicRankKPExtraction.class);
 	@Autowired
 	OpenNLPImpl openNLPImpl;
 
@@ -27,6 +27,7 @@ public class TopicRankKPExtraction {
 			}
 			keywords.add(keyword);
 		}
+		log.info("TopicRank KeyphraseExtraction");
 		return keywords;
 	}
 

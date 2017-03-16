@@ -2,11 +2,7 @@ package de.rwth.i9.cimt.algorithm.kpextraction.supervised;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TfIdf {
-	private static final Logger log = LoggerFactory.getLogger(TfIdf.class);
 
 	/**
 	 * @param doc

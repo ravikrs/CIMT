@@ -21,6 +21,7 @@ public class KeyClusterKPExtraction {
 	OpenNLPImpl openNLPImpl;
 
 	public List<Keyword> extractKeyword(String text, int numKeywords) {
+		log.info("KeyCluster KeyphraseExtraction");
 		return new ArrayList<Keyword>();
 	}
 

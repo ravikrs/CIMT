@@ -40,17 +40,12 @@ public class TextRank {
 		Map<Integer, String> sentenceListMap = IntStream.range(0, sentencesList.size()).boxed()
 				.collect(Collectors.toMap(Function.identity(), i -> sentencesList.get(i)));
 
-		Map<Integer, List<String>> sentenceIndexTokenListMap = sentenceListMap.entrySet().stream()
-				.collect(
-						Collectors
-								.toMap(e -> e.getKey(),
-										e -> (List<String>) Arrays.asList(nlpImpl.tokenize(e.getValue())).stream()
-												.map(token -> token.trim().toLowerCase())
-												.collect(Collectors.toList())));
+		Map<Integer, List<String>> sentenceIndexTokenListMap = sentenceListMap.entrySet().stream().collect(
+				Collectors.toMap(e -> e.getKey(), e -> (List<String>) Arrays.asList(nlpImpl.tokenize(e.getValue()))
+						.stream().map(token -> token.trim().toLowerCase()).collect(Collectors.toList())));
 
 		for (Map.Entry<Integer, String> entry : sentenceListMap.entrySet()) {
 			Integer index = entry.getKey();
-			String sentence = entry.getValue();
 			String[] tokens = sentenceIndexTokenListMap.get(index).toArray(new String[0]);
 			String[] posTags = nlpImpl.tagPartOfSpeech(tokens);
 			for (int i = 0; i < tokens.length; i++) {
@@ -96,7 +91,6 @@ public class TextRank {
 
 		List<String> nonRetainedkeywords = new ArrayList<String>();
 		for (String sentence : sentencesList) {
-			boolean isKeyphrase = false;
 			String keyphrase = "";
 			double keyphraseScore = 0.0;
 			int phraseCount = 0;
@@ -114,7 +108,6 @@ public class TextRank {
 				keyphrase = "";
 				keyphraseScore = 0.0;
 				phraseCount = 0;
-				isKeyphrase = false;
 			}
 		}
 		returnedKeywords.removeAll(nonRetainedkeywords);
@@ -122,7 +115,7 @@ public class TextRank {
 			returnedKeyphrases.add(new Keyword(keywordString, prScoreMap.get(keywordString).doubleValue()));
 		}
 		Collections.sort(returnedKeyphrases, Keyword.KeywordComparatorDesc);
-		returnedKeyphrases.forEach(k -> System.out.println(k.getKeyword() + k.getScore()));
+		returnedKeyphrases.forEach(k -> log.info(k.getKeyword() + k.getScore()));
 		return returnedKeyphrases;
 
 	}

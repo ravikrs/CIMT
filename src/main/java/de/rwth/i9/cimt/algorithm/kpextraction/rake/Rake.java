@@ -16,7 +16,6 @@ import edu.ehu.galan.rake.model.Token;
 
 public class Rake {
 	private static final Logger log = LoggerFactory.getLogger(Rake.class);
-	private static int id = 0;
 
 	public static List<Keyword> extractKeyword(String text, OpenNLPImpl openNlpImpl) {
 		List<LinkedList<Token>> tokenizedSentenceList = new ArrayList<LinkedList<Token>>();
@@ -50,6 +49,7 @@ public class Rake {
 			keyword.setScore(term.getScore());
 			keywords.add(keyword);
 		}
+		log.info("RAKE Algorithm");
 		return keywords;
 	}
 }

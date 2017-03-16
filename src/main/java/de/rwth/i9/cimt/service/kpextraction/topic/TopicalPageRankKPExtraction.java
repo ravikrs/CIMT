@@ -15,7 +15,7 @@ import de.rwth.i9.cimt.service.nlp.NLP;
 
 @Service("topicalPageRankKPExtraction")
 public class TopicalPageRankKPExtraction {
-	private static final Logger logger = LoggerFactory.getLogger(TopicalPageRankKPExtraction.class);
+	private static final Logger log = LoggerFactory.getLogger(TopicalPageRankKPExtraction.class);
 	@Autowired
 	NLP nlpImpl;
 
@@ -28,6 +28,7 @@ public class TopicalPageRankKPExtraction {
 			}
 			keywords.add(keyword);
 		}
+		log.info("TopicalPageRank KeyphraseExtraction");
 		return keywords;
 	}
 

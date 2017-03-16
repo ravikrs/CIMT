@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.jgrapht.alg.scoring.PageRank;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -25,9 +24,6 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM;
 
 public class TopicRank {
 	private static final Logger log = LoggerFactory.getLogger(TopicRank.class);
-	private static final int CO_OCCURRENCE_WINDOW = 5;
-	private static final String NOUN_PHRASE_REGEX_EXPR = "(NN|NNS|NNP|NNPS|JJ|JJR|JJS)*(NN|NNS|NNP|NNPS)";
-	private static final Pattern NOUN_PHRASE_PATTERN = Pattern.compile(NOUN_PHRASE_REGEX_EXPR);
 	private static final double STEM_OVERLAP_THRESHOLD = 0.25;
 	private static SnowballStemmer stemmer = new SnowballStemmer(ALGORITHM.ENGLISH);
 
@@ -82,7 +78,7 @@ public class TopicRank {
 			returnedKeyphrases.add(new Keyword(firstOccurredCandidate, entry.getValue()));
 		}
 		Collections.sort(returnedKeyphrases, Keyword.KeywordComparatorDesc);
-		returnedKeyphrases.forEach(k -> System.out.println(k.getKeyword() + k.getScore()));
+		returnedKeyphrases.forEach(k -> log.info(k.getKeyword() + k.getScore()));
 
 		return returnedKeyphrases;
 

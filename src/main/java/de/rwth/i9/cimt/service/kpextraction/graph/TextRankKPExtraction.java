@@ -17,7 +17,7 @@ import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
 @Service("textRankKPExtraction")
 public class TextRankKPExtraction {
-	private static final Logger logger = LoggerFactory.getLogger(TextRankKPExtraction.class);
+	private static final Logger log = LoggerFactory.getLogger(TextRankKPExtraction.class);
 	@Autowired
 	OpenNLPImpl openNLPImpl;
 	@Autowired
@@ -32,6 +32,7 @@ public class TextRankKPExtraction {
 			}
 			keywords.add(keyword);
 		}
+		log.info("TextRank KeyphraseExtraction");
 		return keywords;
 	}
 

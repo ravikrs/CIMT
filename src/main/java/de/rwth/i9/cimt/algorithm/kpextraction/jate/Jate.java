@@ -463,7 +463,6 @@ public class Jate {
 		String solrHomeDir = solrHome.toString();
 		List<JATETerm> terms = new ArrayList<>();
 		String solrCoreName = "ACLRDTEC";
-		File lock = Paths.get(solrHome.toString(), solrCoreName, "data", "index", "write.lock").toFile();
 
 		freeSolrLocks();
 

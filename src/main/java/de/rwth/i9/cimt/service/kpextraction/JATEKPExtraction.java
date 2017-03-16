@@ -16,7 +16,7 @@ import uk.ac.shef.dcs.jate.model.JATETerm;
 
 @Service("jateKPExtraction")
 public class JATEKPExtraction {
-	private static final Logger logger = LoggerFactory.getLogger(JATEKPExtraction.class);
+	private static final Logger log = LoggerFactory.getLogger(JATEKPExtraction.class);
 
 	public List<Keyword> extractKeyword(String textbody, String algorithmName, int numKeywords) {
 		List<Keyword> keywords = new ArrayList<Keyword>();
@@ -66,9 +66,7 @@ public class JATEKPExtraction {
 			default:
 				break;
 			}
-			String termString = "";
 			for (JATETerm term : terms) {
-				termString += term.getString() + "\t" + term.getScore() + "\n";
 				Keyword keyword = new Keyword();
 				keyword.setKeyword(term.getString());
 				keyword.setScore(term.getScore());
@@ -87,6 +85,8 @@ public class JATEKPExtraction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		log.info("JATE KeyphraseExtraction");
 		return keywords;
+
 	}
 }

@@ -14,7 +14,7 @@ import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
 @Service("rakeKPExtraction")
 public class RAKEKPExtraction {
-	private static final Logger logger = LoggerFactory.getLogger(RAKEKPExtraction.class);
+	private static final Logger log = LoggerFactory.getLogger(RAKEKPExtraction.class);
 
 	@Autowired
 	OpenNLPImpl openNLPImpl;
@@ -29,7 +29,7 @@ public class RAKEKPExtraction {
 			if (++keywordCount > numKeywords)
 				break;
 		}
-
+		log.info("RAKE KeyphraseExtraction");
 		return keywords;
 	}
 
