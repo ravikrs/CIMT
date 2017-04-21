@@ -39,9 +39,10 @@
 		<dkpro.jwpl.version>1.1.0</dkpro.jwpl.version>
 		<hibernate.version>4.3.10.Final</hibernate.version>
 		<dkpro.wsd.version>1.2.0</dkpro.wsd.version>
-		<dkpro.similarity.version>2.1.0</dkpro.similarity.version>
+		<dkpro.similarity.version>2.2.0</dkpro.similarity.version>
 		<dkpro.keyphrases.version>1.5.0</dkpro.keyphrases.version>
 		<dkpro.jwktl.version>1.1.0</dkpro.jwktl.version>
+		<start-class>de.rwth.i9.cimt.ComprehensiveInterestModellingToolkitApplication</start-class>
 	</properties>
 
 	<dependencies>
@@ -84,6 +85,10 @@
 					<groupId>jdk.tools</groupId>
 					<artifactId>jdk.tools</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.lucene</groupId>
+					<artifactId>lucene-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
@@ -115,7 +120,6 @@
 			<artifactId>commons-math</artifactId>
 			<version>1.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>net.sf.extjwnl</groupId>
 			<artifactId>extjwnl</artifactId>
@@ -153,6 +157,10 @@
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.lucene</groupId>
+					<artifactId>lucene-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
@@ -188,12 +196,36 @@
 			<artifactId>de.tudarmstadt.ukp.wikipedia.parser</artifactId>
 			<version>${dkpro.jwpl.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.dkpro.similarity/dkpro-similarity-algorithms-wikipedia-asl -->
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-wikipedia-asl</artifactId>
+			<version>${dkpro.similarity.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.dkpro.similarity/dkpro-similarity-algorithms-vsm-asl -->
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-vsm-asl</artifactId>
+			<version>${dkpro.similarity.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.lucene</groupId>
+					<artifactId>lucene-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
+			<version>${dkpro.similarity.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>dkpro.similarity</groupId>
 			<artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
-			<version>${dkpro.similarity.version}</version>
+			<version>2.1.0</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.wsd</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.wsd.core</artifactId>
@@ -205,9 +237,40 @@
 			<version>${dkpro.keyphrases.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.lsr-asl</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.sspace-gpl</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.uima.vsm-asl</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.dkpro.jwktl</groupId>
 			<artifactId>dkpro-jwktl</artifactId>
 			<version>${dkpro.jwktl.version}</version>
+		</dependency>
+		<!-- testing -->
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.wordnet-asl</artifactId>
+			<version>0.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.wiktionary-asl</artifactId>
+			<version>0.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jwordnet</groupId>
+			<artifactId>jwnl</artifactId>
+			<version>1.4_rc3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
@@ -234,6 +297,7 @@
 			<version>2.2.2</version>
 			<scope>compile</scope>
 		</dependency>
+
 
 	</dependencies>
 

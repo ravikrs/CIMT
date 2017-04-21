@@ -9,7 +9,7 @@
 	<div layout:fragment="content" class="container">
 	<h1>Form</h1>
     <form action="#" th:action="@{/kpextraction/topic/tpr}" th:object="${textbody}" method="post">
-        <p>Text: <input type="text" th:field="*{text}" /></p>
+        <p>Input Text: <input type="text" th:field="*{text}" /></p>
         <p>Keyphrase number: <input type="text" th:field="*{numKeywords}" /></p>
         <p><input type="submit" value="Submit" /> </p>
     </form>

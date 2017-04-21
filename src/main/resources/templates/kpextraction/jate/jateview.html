@@ -10,7 +10,7 @@
 	<h1>Form</h1>
     <form action="#" th:action="@{/kpextraction/jate}" th:object="${textbody}" method="post">
         <p>Algorithm Name: <input type="text" th:field="*{algorithmName}" /></p>
-        <p>String Text: <input type="text" th:field="*{text}" /></p>
+        <p>Input Text: <input type="text" th:field="*{text}" /></p>
         <p>Keyphrase number: <input type="text" th:field="*{numKeywords}" /></p>
         <p><input type="submit" value="Submit" /> </p>
     </form>

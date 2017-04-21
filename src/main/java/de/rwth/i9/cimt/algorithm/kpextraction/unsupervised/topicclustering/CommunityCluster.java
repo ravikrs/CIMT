@@ -14,7 +14,7 @@ public class CommunityCluster {
 	private static Logger log = LoggerFactory.getLogger(CommunityCluster.class);
 
 	public static List<Keyword> performCommunityClusterKE(String textContent) {
-		List<Keyword> retunedKeywords = new ArrayList<Keyword>();
+		List<Keyword> returnedKeywords = new ArrayList<Keyword>();
 		// 1. candidate generation(N-Grams)
 		// 2. WSD (Wikipedia based wsd)
 		// 3. Build Semantic graph
@@ -22,7 +22,7 @@ public class CommunityCluster {
 		// 5. Selecting valuable communities
 		Set<String> Ngrams = generateNgramsCandidate(textContent, 0, 5);
 
-		return retunedKeywords;
+		return returnedKeywords;
 
 	}
 

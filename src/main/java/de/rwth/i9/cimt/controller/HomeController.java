@@ -1,16 +1,13 @@
 package de.rwth.i9.cimt.controller;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,31 +43,8 @@ public class HomeController {
 	private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String getHome(Locale locale, Model model) {
-
-		log.info("Welcome home! The client locale is {}.", locale);
-
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-
-		String formattedDate = dateFormat.format(date);
-
-		model.addAttribute("serverTime", formattedDate);
-
-		return "home";
-
-	}
-
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String view() {
-		log.info("Inside the message/view");
-		try {
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "";
+	public String getHome() {
+		return "CIMT Up & Running";
 	}
 
 	@RequestMapping(value = "/test1", method = RequestMethod.GET)
@@ -167,8 +141,7 @@ public class HomeController {
 			// sim(iced_coffee,green_tea) = 0.3833914674618656
 
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			log.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return "";
 	}
@@ -198,11 +171,9 @@ public class HomeController {
 			// Get the page with title "Hello world".
 			// May throw an exception, if the page does not exist.
 			Page page = wiki.getPage("April");
-
 			System.out.println(page.getText());
 		} catch (WikiApiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
 		return new ModelAndView("messages/view", "message", "");

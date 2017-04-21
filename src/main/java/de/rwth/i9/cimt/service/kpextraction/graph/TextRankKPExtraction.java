@@ -6,12 +6,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.sharethis.textrank.LanguageEnglish;
-import com.sharethis.textrank.TextRank;
-import com.sharethis.textrank.TextRankWordnet;
-
+import de.rwth.i9.cimt.algorithm.kpextraction.textrank.LanguageEnglish;
+import de.rwth.i9.cimt.algorithm.kpextraction.textrank.TextRankWordnet;
 import de.rwth.i9.cimt.model.Keyword;
 import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
@@ -22,10 +21,14 @@ public class TextRankKPExtraction {
 	OpenNLPImpl openNLPImpl;
 	@Autowired
 	LanguageEnglish languageEnglish;
+	private @Value("${cimt.en.wn}") String wordNetPath;
+	private @Value("${cimt.home}") String cimtHome;
 
 	public List<Keyword> extractKeywordTextRank(String text, int numKeyword) {
-		List<Keyword> keywords = new ArrayList<Keyword>();
-		List<Keyword> totalkeywords = TextRank.extractKeywordTextRank(text, numKeyword, openNLPImpl, languageEnglish);
+		List<Keyword> keywords = new ArrayList<>();
+		List<Keyword> totalkeywords = TextRankWordnet.extractKeywordTextRankWordnet(text, openNLPImpl, languageEnglish,
+				cimtHome + "src/main/resources/en/wordnet3.0", false);
+		totalkeywords.sort(Keyword.KeywordComparatorDesc);
 		for (Keyword keyword : totalkeywords) {
 			if (keywords.size() >= numKeyword) {
 				break;
@@ -37,9 +40,10 @@ public class TextRankKPExtraction {
 	}
 
 	public List<Keyword> extractKeywordTextRankWordnet(String text, int numKeyword) {
-		List<Keyword> keywords = new ArrayList<Keyword>();
-		List<Keyword> totalkeywords = TextRankWordnet.extractKeywordTextRankWordnet(text, numKeyword, openNLPImpl,
-				languageEnglish);
+		List<Keyword> keywords = new ArrayList<>();
+		List<Keyword> totalkeywords = TextRankWordnet.extractKeywordTextRankWordnet(text, openNLPImpl, languageEnglish,
+				cimtHome + "src/main/resources/en/wordnet3.0", true);
+		totalkeywords.sort(Keyword.KeywordComparatorDesc);
 		for (Keyword keyword : totalkeywords) {
 			if (keywords.size() >= numKeyword) {
 				break;

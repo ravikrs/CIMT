@@ -1,0 +1,32 @@
+"Date/Time","Total Memory","Free Memory","Message"
+"2017.03.22 13:35:03","351797248","309783456","parse input dumps..."
+"2017.03.22 13:35:03","351797248","309783456","Discussions are unavailable"
+"2017.03.22 22:41:15","63438848","6178760","2048
+
+org.apache.xerces.impl.io.UTF8Reader.read(Unknown Source)
+org.apache.xerces.impl.XMLEntityScanner.load(Unknown Source)
+org.apache.xerces.impl.XMLEntityScanner.scanContent(Unknown Source)
+org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanContent(Unknown Source)
+org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+org.apache.xerces.parsers.AbstractSAXParser.parse(Unknown Source)
+org.apache.xerces.jaxp.SAXParserImpl$JAXPSAXParser.parse(Unknown Source)
+org.apache.xerces.jaxp.SAXParserImpl.parse(Unknown Source)
+javax.xml.parsers.SAXParser.parse(Unknown Source)
+de.tudarmstadt.ukp.wikipedia.wikimachine.dump.xml.AbstractXmlDumpReader.readDump(AbstractXmlDumpReader.java:205)
+de.tudarmstadt.ukp.wikipedia.datamachine.dump.xml.XML2Binary.<init>(XML2Binary.java:47)
+de.tudarmstadt.ukp.wikipedia.datamachine.domain.DataMachineGenerator.processInputDump(DataMachineGenerator.java:70)
+de.tudarmstadt.ukp.wikipedia.datamachine.domain.DataMachineGenerator.start(DataMachineGenerator.java:64)
+de.tudarmstadt.ukp.wikipedia.datamachine.domain.JWPLDataMachine.main(JWPLDataMachine.java:64)
+de.rwth.i9.cimt.evaluation.CIMTJWPLDataMachine.main(CIMTJWPLDataMachine.java:21)
+sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+java.lang.reflect.Method.invoke(Unknown Source)
+org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:48)
+org.springframework.boot.loader.Launcher.launch(Launcher.java:87)
+org.springframework.boot.loader.Launcher.launch(Launcher.java:50)
+org.springframework.boot.loader.PropertiesLauncher.main(PropertiesLauncher.java:525)"
