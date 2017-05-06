@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import de.rwth.i9.cimt.service.similarity.LSRSimilarityService;
 import de.rwth.i9.cimt.service.similarity.SimilarityRelatednessService;
 import slib.graph.algo.utils.GAction;
 import slib.graph.algo.utils.GActionType;
@@ -34,9 +33,9 @@ import slib.utils.ex.SLIB_Exception;
 
 @Service
 public class SRWordNet implements SimilarityRelatednessService {
-	private static final Logger log = LoggerFactory.getLogger(LSRSimilarityService.class);
+	private static final Logger log = LoggerFactory.getLogger(SRWordNet.class);
 	// Location of WordNet Data
-	private @Value("${cimt.en.wn}") String dataloc;
+	private @Value("${cimt.home}") String cimtHome;
 	private static G wordnet = null;
 	private static SM_Engine engine = null;
 	private static IndexerWordNetBasic indexWordnetNoun;
@@ -54,7 +53,7 @@ public class SRWordNet implements SimilarityRelatednessService {
 		URIFactory factory = URIFactoryMemory.getSingleton();
 		URI guri = factory.getURI("http://graph/wordnet/");
 		wordnet = new GraphMemory(guri);
-		dataloc += "dict";
+		String dataloc = cimtHome + "src/main/resources/en/wordnet3.0/dict/";
 
 		// We load the data into the graph
 		GraphLoader_Wordnet loader = new GraphLoader_Wordnet();
@@ -85,7 +84,7 @@ public class SRWordNet implements SimilarityRelatednessService {
 	}
 
 	@Override
-	public double computeVectorRelatedness(List<String> vector1, List<String> vector2) {
+	public double computeVectorRelatedness(List<String> vector1, List<String> vector2, String algorithmName) {
 		double relatednessScore = 0.0;
 		try {
 			if (wordnet == null) {
@@ -115,7 +114,7 @@ public class SRWordNet implements SimilarityRelatednessService {
 	}
 
 	@Override
-	public List<List<Double>> computeWordRelatedness(List<String> vector1, List<String> vector2) {
+	public List<List<Double>> computeWordRelatedness(List<String> vector1, List<String> vector2, String algorithmName) {
 		List<List<Double>> score = new ArrayList<>();
 		List<Set<URI>> vector1Uris = new ArrayList<>();
 		List<Set<URI>> vector2Uris = new ArrayList<>();

@@ -61,10 +61,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
 		<!-- RAKE Dependency -->
 		<dependency>
 			<groupId>edu.ehu.galan.rake</groupId>
@@ -86,10 +82,39 @@
 					<artifactId>jdk.tools</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.apache.lucene</groupId>
-					<artifactId>lucene-core</artifactId>
+					<groupId>org.apache.solr</groupId>
+					<artifactId>solr-cell</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.solr</groupId>
+					<artifactId>solr-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.solr</groupId>
+					<artifactId>solr-langid</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-cell</artifactId>
+			<version>${solr.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>jdk.tools</groupId>
+					<artifactId>jdk.tools</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>${solr.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-langid</artifactId>
+			<version>${solr.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
 		<dependency>
@@ -170,43 +195,24 @@
 			<version>2.1.1</version>
 		</dependency>
 
+		<!-- DK pro dependencies Start -->
+
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
-			<artifactId>de.tudarmstadt.ukp.wikipedia.api</artifactId>
-			<version>${dkpro.jwpl.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.lsr-asl</artifactId>
+			<version>2.1.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
-			<artifactId>de.tudarmstadt.ukp.wikipedia.datamachine</artifactId>
-			<version>${dkpro.jwpl.version}</version>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.vsm-asl</artifactId>
+			<version>2.1.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
-			<artifactId>de.tudarmstadt.ukp.wikipedia.util</artifactId>
-			<version>${dkpro.jwpl.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
-			<artifactId>de.tudarmstadt.ukp.wikipedia.parser</artifactId>
-			<version>${dkpro.jwpl.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.dkpro.similarity/dkpro-similarity-algorithms-wikipedia-asl -->
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-algorithms-wikipedia-asl</artifactId>
-			<version>${dkpro.similarity.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.dkpro.similarity/dkpro-similarity-algorithms-vsm-asl -->
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-algorithms-vsm-asl</artifactId>
-			<version>${dkpro.similarity.version}</version>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.algorithms.sspace-gpl</artifactId>
+			<version>2.1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.lucene</groupId>
@@ -214,49 +220,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
-			<version>${dkpro.similarity.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
-			<version>2.1.0</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.wsd</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.wsd.core</artifactId>
-			<version>${dkpro.wsd.version}</version>
+			<groupId>de.tudarmstadt.ukp.wikipedia</groupId>
+			<artifactId>de.tudarmstadt.ukp.wikipedia.datamachine</artifactId>
+			<version>${dkpro.jwpl.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.keyphrases</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.keyphrases.core-asl</artifactId>
-			<version>${dkpro.keyphrases.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.algorithms.lsr-asl</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.algorithms.sspace-gpl</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.uima.vsm-asl</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.jwktl</groupId>
-			<artifactId>dkpro-jwktl</artifactId>
-			<version>${dkpro.jwktl.version}</version>
-		</dependency>
-		<!-- testing -->
+
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.wordnet-asl</artifactId>
@@ -267,10 +237,24 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.wiktionary-asl</artifactId>
 			<version>0.8.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>dkpro.similarity</groupId>
+			<artifactId>dkpro.similarity.uima.vsm-asl</artifactId>
+			<version>2.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.lucene</groupId>
+					<artifactId>lucene-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- DK pro dependencies End -->
+
 		<dependency>
 			<groupId>net.sf.jwordnet</groupId>
 			<artifactId>jwnl</artifactId>
-			<version>1.4_rc3</version>
+			<version>1.3.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>

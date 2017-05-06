@@ -22,22 +22,46 @@ public class LSRSimilarityController {
 	private static final Logger log = LoggerFactory.getLogger(LSRSimilarityController.class);
 
 	@Autowired
-	SimilarityRelatednessService lsrSimilarityService;
+	SimilarityRelatednessService wnLSRSimilarityService;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public double computeRelatednessScoreTokens(@RequestParam("token1") String token1,
+	@Autowired
+	SimilarityRelatednessService wktnlLSRSimilarityService;
+
+	@RequestMapping(value = "/wordnet", method = RequestMethod.GET)
+	public double computeRelatednessScoreTokensWordNet(@RequestParam("token1") String token1,
 			@RequestParam("token2") String token2) {
-		return lsrSimilarityService.computeVectorRelatedness(Arrays.asList(token1), Arrays.asList(token2));
+		return wnLSRSimilarityService.computeVectorRelatedness(Arrays.asList(token1), Arrays.asList(token2), "default");
 	}
 
-	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public double computeRelatednessScoreList(@RequestBody SimilarityVector sv) {
-		return lsrSimilarityService.computeVectorRelatedness(sv.getVector1(), sv.getVector2());
+	@RequestMapping(value = "/wordnet", method = RequestMethod.POST)
+	public double computeRelatednessScoreListWordNet(@RequestBody SimilarityVector sv) {
+		return wnLSRSimilarityService.computeVectorRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
 	}
 
-	@RequestMapping(value = "/vector", method = RequestMethod.POST)
-	public List<List<Double>> computeRelatednessScoreWord(@RequestBody SimilarityVector sv) {
-		return lsrSimilarityService.computeWordRelatedness(sv.getVector1(), sv.getVector2());
+	@RequestMapping(value = "/wordnet/vector", method = RequestMethod.POST)
+	public List<List<Double>> computeRelatednessScoreWordWordNet(@RequestBody SimilarityVector sv) {
+		return wnLSRSimilarityService.computeWordRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
+	}
+
+	@RequestMapping(value = "/wiktionary", method = RequestMethod.GET)
+	public double computeRelatednessScoreTokensWiktionary(@RequestParam("token1") String token1,
+			@RequestParam("token2") String token2) {
+		return wktnlLSRSimilarityService.computeVectorRelatedness(Arrays.asList(token1), Arrays.asList(token2),
+				"default");
+	}
+
+	@RequestMapping(value = "/wiktionary", method = RequestMethod.POST)
+	public double computeRelatednessScoreListWiktionary(@RequestBody SimilarityVector sv) {
+		return wktnlLSRSimilarityService.computeVectorRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
+	}
+
+	@RequestMapping(value = "/wiktionary/vector", method = RequestMethod.POST)
+	public List<List<Double>> computeRelatednessScoreWordWiktionary(@RequestBody SimilarityVector sv) {
+		return wktnlLSRSimilarityService.computeWordRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
 	}
 
 }

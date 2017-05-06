@@ -27,17 +27,20 @@ public class WikipediaSimilarityController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public double computeRelatednessScoreTokens(@RequestParam("token1") String token1,
 			@RequestParam("token2") String token2) {
-		return wikipediaSimilarityService.computeVectorRelatedness(Arrays.asList(token1), Arrays.asList(token2));
+		return wikipediaSimilarityService.computeVectorRelatedness(Arrays.asList(token1), Arrays.asList(token2),
+				"default");
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public double computeRelatednessScoreList(@RequestBody SimilarityVector sv) {
-		return wikipediaSimilarityService.computeVectorRelatedness(sv.getVector1(), sv.getVector2());
+		return wikipediaSimilarityService.computeVectorRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
 	}
 
 	@RequestMapping(value = "/vector", method = RequestMethod.POST)
 	public List<List<Double>> computeRelatednessScoreWord(@RequestBody SimilarityVector sv) {
-		return wikipediaSimilarityService.computeWordRelatedness(sv.getVector1(), sv.getVector2());
+		return wikipediaSimilarityService.computeWordRelatedness(sv.getVector1(), sv.getVector2(),
+				sv.getSimilarityAlgorithm());
 	}
 
 }

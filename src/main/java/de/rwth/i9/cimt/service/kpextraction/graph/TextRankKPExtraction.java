@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import de.rwth.i9.cimt.algorithm.kpextraction.textrank.LanguageEnglish;
 import de.rwth.i9.cimt.algorithm.kpextraction.textrank.TextRankWordnet;
+import de.rwth.i9.cimt.algorithm.kpextraction.unsupervised.graphranking.TextRank;
 import de.rwth.i9.cimt.model.Keyword;
 import de.rwth.i9.cimt.service.nlp.opennlp.OpenNLPImpl;
 
@@ -21,13 +22,16 @@ public class TextRankKPExtraction {
 	OpenNLPImpl openNLPImpl;
 	@Autowired
 	LanguageEnglish languageEnglish;
-	private @Value("${cimt.en.wn}") String wordNetPath;
 	private @Value("${cimt.home}") String cimtHome;
 
 	public List<Keyword> extractKeywordTextRank(String text, int numKeyword) {
 		List<Keyword> keywords = new ArrayList<>();
-		List<Keyword> totalkeywords = TextRankWordnet.extractKeywordTextRankWordnet(text, openNLPImpl, languageEnglish,
-				cimtHome + "src/main/resources/en/wordnet3.0", false);
+		// our implementation
+		List<Keyword> totalkeywords = TextRank.performTextRankKE(text, openNLPImpl);
+		// List<Keyword> totalkeywords =
+		// TextRankWordnet.extractKeywordTextRankWordnet(text, openNLPImpl,
+		// languageEnglish,
+		// cimtHome + "src/main/resources/en/wordnet3.0", false);
 		totalkeywords.sort(Keyword.KeywordComparatorDesc);
 		for (Keyword keyword : totalkeywords) {
 			if (keywords.size() >= numKeyword) {

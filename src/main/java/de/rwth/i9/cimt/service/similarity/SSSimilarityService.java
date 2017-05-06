@@ -14,7 +14,7 @@ public class SSSimilarityService implements SimilarityRelatednessService {
 	private static final Logger log = LoggerFactory.getLogger(SSSimilarityService.class);
 
 	@Override
-	public double computeVectorRelatedness(List<String> vector1, List<String> vector2) {
+	public double computeVectorRelatedness(List<String> vector1, List<String> vector2, String algorithmName) {
 		double relatednessScore = 0.0;
 		SSTermSimilarity sm = new SSTermSimilarity();
 		relatednessScore = sm.calculateLSRSimilarityMeasureWordNet(vector1, vector2);
@@ -22,7 +22,7 @@ public class SSSimilarityService implements SimilarityRelatednessService {
 	}
 
 	@Override
-	public List<List<Double>> computeWordRelatedness(List<String> vector1, List<String> vector2) {
+	public List<List<Double>> computeWordRelatedness(List<String> vector1, List<String> vector2, String algorithmName) {
 		List<List<Double>> score = new ArrayList<>();
 		List<Double> rowScore;
 		SSTermSimilarity sm = new SSTermSimilarity();

@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.tudarmstadt.ukp.wikipedia.api.Category;
 import de.tudarmstadt.ukp.wikipedia.api.DatabaseConfiguration;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
 import de.tudarmstadt.ukp.wikipedia.api.WikiConstants.Language;
 import de.tudarmstadt.ukp.wikipedia.api.Wikipedia;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
+import de.tudarmstadt.ukp.wikipedia.api.exception.WikiTitleParsingException;
 import slib.graph.algo.utils.GAction;
 import slib.graph.algo.utils.GActionType;
 import slib.graph.algo.utils.GraphActionExecutor;
@@ -171,6 +173,42 @@ public class HomeController {
 			// Get the page with title "Hello world".
 			// May throw an exception, if the page does not exist.
 			Page page = wiki.getPage("April");
+			System.out.println(page.getText());
+		} catch (WikiApiException e) {
+			log.error(ExceptionUtils.getFullStackTrace(e));
+		}
+
+		return new ModelAndView("messages/view", "message", "");
+	}
+
+	@RequestMapping(value = "/test4", method = RequestMethod.GET)
+	public ModelAndView view4() {
+		log.info("Inside the message/view3");
+
+		// configure the database connection parameters
+		DatabaseConfiguration dbConfig = new DatabaseConfiguration();
+		dbConfig.setHost("localhost");
+		dbConfig.setDatabase("simplewikidb");
+		dbConfig.setUser("wikiuser");
+		dbConfig.setPassword("wikiuser");
+		dbConfig.setLanguage(Language.simple_english);
+
+		// Create a new German wikipedia.
+		Wikipedia wiki;
+		try {
+			wiki = new Wikipedia(dbConfig);
+			// Get the page with title "Hello world".
+			// May throw an exception, if the page does not exist.
+			Page page = wiki.getPage("April");
+			Set<Category> cate = page.getCategories();
+			cate.forEach(e -> {
+				try {
+					System.out.println(e.getTitle());
+				} catch (WikiTitleParsingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			});
 			System.out.println(page.getText());
 		} catch (WikiApiException e) {
 			log.error(ExceptionUtils.getFullStackTrace(e));

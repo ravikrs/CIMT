@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class SimilarityVector {
 	private List<String> vector1;
 	private List<String> vector2;
+	private String similarityAlgorithm;
 
 	public List<String> getVector1() {
 		return vector1;
@@ -23,6 +24,14 @@ public class SimilarityVector {
 
 	public void setVector2(List<String> vector2) {
 		this.vector2 = vector2;
+	}
+
+	public String getSimilarityAlgorithm() {
+		return similarityAlgorithm;
+	}
+
+	public void setSimilarityAlgorithm(String similarityAlgorithm) {
+		this.similarityAlgorithm = similarityAlgorithm;
 	}
 
 }
